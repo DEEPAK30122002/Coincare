@@ -1,0 +1,7 @@
+
+coincare_website/authentication/__pycache__/
+coincare_website/coincare_website/__pycache__/
+coincare_website/coincare_website/.env/
+coincare_website/expenses/__pycache__/
+
+myenv/

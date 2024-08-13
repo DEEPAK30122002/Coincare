@@ -1,0 +1,108 @@
+/* General body styling */
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    background-color: #f4f4f4; /* Light background color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container styling */
+.form-container {
+    background: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    max-width: 400px; /* Limit width for larger screens */
+    width: 100%; /* Full width on smaller screens */
+}
+
+/* Title styling */
+.form-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    text-align: center; /* Center align text */
+    color: #333; /* Dark text color */
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+/* Label styling */
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #555; /* Slightly darker text for labels */
+}
+
+/* Input styling */
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Input focus styling */
+.form-group input:focus {
+    border-color: #007bff; /* Blue border on focus */
+    outline: none; /* Remove default outline */
+}
+
+/* Error message styling */
+.form-group .error {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem; /* Slight space between input and error message */
+}
+
+/* Show password toggle styling */
+.show-password-toggle {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #007bff; /* Blue color */
+    cursor: pointer;
+    text-align: right;
+}
+
+/* Submit button styling */
+.form-container input[type="submit"] {
+    background-color: #007bff; /* Blue background */
+    color: #fff; /* White text */
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 100%; /* Full width */
+    margin-top: 1rem; /* Space above the button */
+}
+
+/* Submit button hover styling */
+.form-container input[type="submit"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Additional styling for any paragraph within form-group */
+.form-group p {
+    text-align: center; /* Center align text */
+    margin-top: 1rem;
+}
+
+/* Link styling */
+.form-group a {
+    color: #007bff; /* Blue color for links */
+    text-decoration: none;
+}
+
+/* Link hover styling */
+.form-group a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
