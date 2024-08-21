@@ -79,6 +79,6 @@ class LoginView(View):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect("base")  # Redirect to a success page after login
+                return redirect("expenses")  # Redirect to a success page after login
             form.add_error(None, "Invalid username or password.")
         return render(request, "authentication/login.html", {"form": form})
