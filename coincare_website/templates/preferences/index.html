@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h5>Preferred Currency</h5>
+  
+  <!-- Include partials for messages -->
+  {% include 'partials/messages.html' %}
+  
+  <!-- Form to select and save preferred currency -->
+  <form action="{% url 'preferences' %}" method="post">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+      <label for="currency" class="form-label">Select Preferred Currency</label>
+      <select name="currency" class="form-select" id="currency" aria-label="Select preferred currency">
+        <!-- Add an option for selecting no preference -->
+        <option value="" {% if not user_preferences.currency %}selected{% endif %}>Choose a currency...</option>
+        
+        <!-- Iterate through currencies to populate the dropdown -->
+        {% for currency in currencies %}
+          <option value="{{ currency.value }}" {% if user_preferences.currency == currency.value %}selected{% endif %}>
+            {{ currency.name }} - {{ currency.value }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    
+    <!-- Submit Button -->
+    <button class="btn btn-primary" type="submit">Save Changes</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,6 +1,20 @@
+"""
+This module contains the configuration for the authentication app.
+
+It includes the AuthenticationConfig class, which is used to configure
+the authentication application for the Django project.
+"""
+
 from django.apps import AppConfig
 
 
 class AuthenticationConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'authentication'
+    """
+    Configuration for the authentication app.
+
+    This class sets up the application configuration for the 'authentication'
+    app, including the default auto field type.
+    """
+
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "authentication"

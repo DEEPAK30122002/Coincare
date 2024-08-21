@@ -1,19 +1,34 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %}
+
+{% block content %}
 <div class="container mt-4">
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item">
-        <a href="{% url 'expenses' %}">Expenses</a>
-      </li>
-      <li class="breadcrumb-item active" aria-current="page">Add Expense</li>
-    </ol>
-  </nav>
+  <div class="row mb-3">
+    <div class="col-md-10">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'expenses' %}">Expenses</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">Edit Expense</li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="col-md-2 text-end">
+      <a
+        href="{% url 'expense-delete' expense.id %}"
+        class="btn btn-danger btn-sm"
+        >Delete</a
+      >
+    </div>
+  </div>
 
   <div class="card">
     <div class="card-body">
-      <form action="{% url 'add-expenses' %}" method="post">
-        {% include 'partials/messages.html' %} {% csrf_token %}
-
+      <form action="{% url 'expense-edit' expense.id %}" method="post">
+        {% include 'partials/messages.html' %}
+        {% csrf_token %}
+        
         <!-- Amount Field -->
         <div class="mb-3">
           <label for="amount" class="form-label">Amount</label>
@@ -26,7 +41,7 @@
             placeholder="Enter amount"
           />
         </div>
-
+        
         <!-- Description Field -->
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
@@ -39,17 +54,18 @@
             placeholder="Enter description"
           />
         </div>
-
+        
         <!-- Category Field -->
         <div class="mb-3">
           <label for="category" class="form-label">Category</label>
           <select class="form-select" name="category" id="category">
+            <option value="{{ values.category }}" selected>{{ values.category }}</option>
             {% for category in categories %}
-            <option value="{{ category.name }}">{{ category.name }}</option>
+              <option value="{{ category.name }}">{{ category.name }}</option>
             {% endfor %}
           </select>
         </div>
-
+        
         <!-- Date of Expense Field -->
         <div class="mb-3">
           <label for="expense_date" class="form-label">Date of Expense</label>
@@ -58,11 +74,12 @@
             class="form-control"
             id="expense_date"
             name="expense_date"
+            value="{{ values.date|date:'Y-m-d' }}"
           />
         </div>
-
+        
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Save</button>
       </form>
     </div>
   </div>

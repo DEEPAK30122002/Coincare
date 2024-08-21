@@ -1,8 +1,7 @@
-"""
-URL configuration for coincare_website project.
+"""expenseswebsite URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
+    https://docs.djangoproject.com/en/3.0/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -14,11 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
-from django.urls import path , include
+from django.urls import path, include
+from .views import index
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('expenses.urls')),
-    path('authentication/',include('authentication.urls')),
+    path("", index, name="index"),
+    path("authentication/", include("authentication.urls")),
+    path("expenses/", include("expenses.urls")),
+    path("preferences/", include("userpreferences.urls")),
+    path("admin/", admin.site.urls),
 ]

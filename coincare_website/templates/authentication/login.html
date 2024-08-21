@@ -1,125 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;700&display=swap" rel="stylesheet">
-    
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+
     {% load static %}
     <style>
-        body {
-            font-family: 'Source Sans Pro', sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.5); 
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-            max-width: 400px;
-            width: 100%;
-        }
-        h1 {
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            text-align: center; 
-        }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .form-group input:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-        .form-group .error {
-            color: red;
-            font-size: 0.875rem;
-        }
-        .form-group input[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-        }
-        .form-group input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-        .form-group p {
-            text-align: center;
-            margin-top: 1rem;
-        }
-
-        .form-group a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .form-group a:hover {
-            text-decoration:underline;
-        }
-        .errors {
-            color: red;
-            font-size: 0.875rem;
-            margin-top: 1rem;
-        }
+      body {
+        font-family: "Source Sans Pro", sans-serif;
+        background-color: #121212; /* Dark background color for the body */
+        color: #e0e0e0; /* Light text color for contrast */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        background: rgba(
+          33,
+          33,
+          33,
+          0.9
+        ); /* Darker background for the container */
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Slightly darker shadow */
+        max-width: 400px;
+        width: 100%;
+      }
+      h1 {
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        text-align: center;
+      }
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #e0e0e0; /* Light text color for labels */
+      }
+      .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #444; /* Darker border for inputs */
+        border-radius: 4px;
+        box-sizing: border-box;
+        background-color: #333; /* Dark background for inputs */
+        color: #e0e0e0; /* Light text color for inputs */
+      }
+      .form-group input:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+      .form-group .error {
+        color: red;
+        font-size: 0.875rem;
+      }
+      .form-group input[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        width: 100%;
+      }
+      .form-group input[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+      .form-group p {
+        text-align: center;
+        margin-top: 1rem;
+      }
+      .form-group a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .form-group a:hover {
+        text-decoration: underline;
+      }
+      .errors {
+        color: red;
+        font-size: 0.875rem;
+        margin-top: 1rem;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>Login</h1>
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Password" required>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Login">
-            </div>
-            <div class="form-group">
-                <p>Don't have an account? <a href="{% url 'register' %}">Register now</a></p>
-                <p><a href="">Forgot password?</a></p>
-            </div>
-            {% if form.errors %}
-                <div class="errors">
-                    {% for field in form %}
-                        {% for error in field.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    {% endfor %}
-                    {% for error in form.non_field_errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </form>
+      <h1>Login</h1>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Login" />
+        </div>
+        <div class="form-group">
+          <p>
+            Don't have an account?
+            <a href="{% url 'register' %}">Register now</a>
+          </p>
+          <p><a href="">Forgot password?</a></p>
+        </div>
+        {% if form.errors %}
+        <div class="errors">
+          {% for field in form %} {% for error in field.errors %}
+          <p>{{ error }}</p>
+          {% endfor %} {% endfor %} {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </form>
     </div>
-</body>
+  </body>
 </html>
