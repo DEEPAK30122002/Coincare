@@ -1,0 +1,182 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container rounded bg-white mt-5 mb-5">
+  <div class="row">
+    <!-- Profile Picture and Basic Info -->
+    <div class="col-md-4 border-right">
+      <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+        {% if user_profile.profile_picture %}
+        <img
+          class="rounded-circle images"
+          width="150px"
+          src="{{ user_profile.profile_picture.url }}"
+          alt="Profile Picture"
+        />
+        {% else %}
+        <img
+          class="rounded-circle"
+          width="150px"
+          src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+          alt="Default Profile Picture"
+        />
+        {% endif %}
+        <span class="font-weight-bold mt-2">{{ user.username }}</span>
+        <span class="text-black-50">{{ user.email }}</span>
+      </div>
+    </div>
+
+    <!-- User Profile Update Form -->
+    <div class="col-md-5 border-right">
+      <div class="p-3 py-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="text-right">Account Center</h4>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <!-- Username Field -->
+          <div class="mb-3">
+            <label for="{{ u_form.username.id_for_label }}" class="form-label"
+              >Username:</label
+            >
+            <input
+              type="text"
+              id="{{ u_form.username.id_for_label }}"
+              name="{{ u_form.username.html_name }}"
+              value="{{ u_form.username.value }}"
+              class="form-control area"
+            />
+            {% if u_form.username.errors %}
+            <div class="invalid-feedback">
+              {% for error in u_form.username.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Email Field -->
+          <div class="mb-3">
+            <label for="{{ u_form.email.id_for_label }}" class="form-label"
+              >Email id:</label
+            >
+            <input
+              type="email"
+              id="{{ u_form.email.id_for_label }}"
+              name="{{ u_form.email.html_name }}"
+              value="{{ u_form.email.value }}"
+              readonly
+              class="form-control area"
+            />
+            {% if u_form.email.errors %}
+            <div class="invalid-feedback">
+              {% for error in u_form.email.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- First Name Field -->
+          <div class="mb-3">
+            <label for="{{ u_form.first_name.id_for_label }}" class="form-label"
+              >First Name:</label
+            >
+            <input
+              type="text"
+              id="{{ u_form.first_name.id_for_label }}"
+              name="{{ u_form.first_name.html_name }}"
+              value="{{ u_form.first_name.value }}"
+              class="form-control area"
+            />
+            {% if u_form.first_name.errors %}
+            <div class="invalid-feedback">
+              {% for error in u_form.first_name.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Last Name Field -->
+          <div class="mb-4">
+            <label for="{{ u_form.last_name.id_for_label }}" class="form-label"
+              >Last Name:</label
+            >
+            <input
+              type="text"
+              id="{{ u_form.last_name.id_for_label }}"
+              name="{{ u_form.last_name.html_name }}"
+              value="{{ u_form.last_name.value }}"
+              class="form-control area"
+            />
+            {% if u_form.last_name.errors %}
+            <div class="invalid-feedback">
+              {% for error in u_form.last_name.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Profile Picture Field -->
+          <div class="mb-0">
+            <label
+              for="{{ p_form.profile_picture.id_for_label }}"
+              class="form-label"
+              >{{ p_form.as_p }}</label
+            >
+            <!-- <input
+              type="file"
+              id="{{ p_form.profile_picture.id_for_label }}"
+              name="{{ p_form.profile_picture.html_name }}"
+              class="form-control area"
+            /> -->
+            {% if p_form.profile_picture.errors %}
+            <div class="invalid-feedback">
+              {% for error in p_form.profile_picture.errors %}
+              <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+
+          <div class="mt-1 text-center">
+            <button type="submit" class="btn btn-outline-primary rounded-pill">
+              Update
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Additional Profile Information -->
+  </div>
+</div>
+
+<style>
+  .search-box {
+    border-radius: 20px !important;
+  }
+  h4 {
+    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  }
+  .invalid-feedback {
+    color: red;
+    font-size: 0.875em;
+  }
+  .labels {
+    font-weight: bold;
+  }
+  .images {
+    width: 150px;
+    height: 160px;
+    object-fit: cover;
+  }
+  .form-control-plaintext {
+    padding: 0;
+  }
+  .area {
+    border-radius: 10px;
+  }
+</style>
+{% endblock %}

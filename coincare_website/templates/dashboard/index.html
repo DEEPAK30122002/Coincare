@@ -1,0 +1,259 @@
+{% extends 'base.html' %} {% block content %} {% load static %}
+<div class="container mt-4">
+  <h2>Dashboard</h2>
+  <div class="row">
+    <!-- Income Card -->
+    <div class="col-md-4">
+      <div
+        class="card text-white mt-2 mb-3"
+        style="background-color: #00a86b; color: white"
+      >
+        <div class="card-body">
+          <h5 class="card-title">Total Income</h5>
+          <p class="card-text">{{ total_income }}</p>
+          <a
+            href="{% url 'income_summary' %}"
+            class="btn btn-outline-light rounded-pill"
+          >
+            Summary
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expenses Card -->
+    <div class="col-md-4">
+      <div
+        class="card text-white mt-2 mb-3"
+        style="background-color: #ff033e; color: white"
+      >
+        <div class="card-body">
+          <h5 class="card-title">Total Expenses</h5>
+          <p class="card-text">{{ total_expenses }}</p>
+          <a
+            href="{% url 'expense_summary' %}"
+            class="btn btn-outline-light rounded-pill"
+          >
+            Summary
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="col-md-4">
+      <div class="card text-white bg-primary mt-2 mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Balance</h5>
+          <p class="card-text">{{ balance }}</p>
+          <a
+            href="{% url 'balance_summary' %}"
+            class="btn btn-outline-light rounded-pill"
+          >
+            Summary
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js for Expenses vs Income and Balance Pie Chart -->
+  <div class="row mt-2">
+    <!-- Expenses vs Income Chart -->
+    <div class="col-md-6">
+      <div class="card text-black bg-light shadow-lg rounded-lg">
+        <div class="card-body" id="weeklyExpensesIncomeChart">
+          <h5 class="card-title text-center">Weekly Expenses & Income</h5>
+          <canvas id="weeklyExpensesIncomeCanvas" class="chart-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Balance Pie Chart -->
+    <div class="col-md-6">
+      <div class="card text-black bg-light shadow-lg rounded-lg">
+        <div class="card-body" id="piechart">
+          <h5 class="card-title text-center">Income & Expenses</h5>
+          <canvas id="balancePieChart" class="chart-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly Expenses and Income Chart -->
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card text-black bg-light shadow-lg rounded-lg">
+        <div class="card-body" id="barchat">
+          <h5 class="card-title text-center">Expenses vs Income</h5>
+          <canvas id="expensesIncomeChart" class="chart-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js Integration -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Line chart for Expenses vs Income
+    var ctxLine = document.getElementById('expensesIncomeChart').getContext('2d');
+    var expensesIncomeChart = new Chart(ctxLine, {
+      type: 'line',
+      data: {
+        labels: ['Today', 'This Week', 'This Month', 'Last 3 Months', 'Last 6 Months'],
+        datasets: [{
+          label: 'Income',
+          data: [
+            {{ income_data.today|default:0 }},
+            {{ income_data.week|default:0 }},
+            {{ income_data.month|default:0 }},
+            {{ income_data.three_months|default:0 }},
+            {{ income_data.six_months|default:0 }}
+          ],
+          backgroundColor: 'rgba(0, 168, 107, 0.2)', // Updated color
+          borderColor: 'rgba(0, 168, 107, 1)', // Updated color
+          borderWidth: 0,
+        }, {
+          label: 'Expenses',
+          data: [
+            {{ expenses_data.today|default:0 }},
+            {{ expenses_data.week|default:0 }},
+            {{ expenses_data.month|default:0 }},
+            {{ expenses_data.three_months|default:0 }},
+            {{ expenses_data.six_months|default:0 }}
+          ],
+          backgroundColor: 'rgba(255, 3, 62, 0.6)', // Updated color
+          borderColor: 'rgba(255, 3, 62, 1)', // Updated color
+          borderWidth: 0,
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+        },
+      }
+    });
+
+    // Pie chart for Balance Breakdown
+    var ctxPie = document.getElementById('balancePieChart').getContext('2d');
+    var balancePieChart = new Chart(ctxPie, {
+      type: 'pie',
+      data: {
+        labels: ['Income', 'Expenses'],
+        datasets: [{
+          data: [
+            {{ total_income }},
+            {{ total_expenses }},
+          ],
+          backgroundColor: [
+            'rgba(0, 168, 107, 0.8)', // Updated color
+            'rgba(255, 3, 62, 0.8)',
+          ],
+          borderColor: [
+            'rgba(0, 168, 107, 0.8)', // Updated color
+            'rgba(255, 3, 62, 0.8)',
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+        },
+      }
+    });
+
+    // Bar chart for Weekly Expenses and Income
+    var ctxWeekly = document.getElementById('weeklyExpensesIncomeCanvas').getContext('2d');
+    var weeklyExpensesIncomeChart = new Chart(ctxWeekly, {
+      type: 'line',
+      data: {
+        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        datasets: [{
+          label: 'Weekly Income',
+          data: [
+            {{ weekly_income.monday|default:0 }},
+            {{ weekly_income.tuesday|default:0 }},
+            {{ weekly_income.wednesday|default:0 }},
+            {{ weekly_income.thursday|default:0 }},
+            {{ weekly_income.friday|default:0 }},
+            {{ weekly_income.saturday|default:0 }},
+            {{ weekly_income.sunday|default:0 }}
+          ],
+          backgroundColor: 'rgba(0, 168, 107, 0.2)', // Updated color
+          borderColor: 'rgba(0, 168, 107, 1)',
+          borderWidth: 0
+        }, {
+          label: 'Weekly Expenses',
+          data: [
+            {{ weekly_expenses.monday|default:0 }},
+            {{ weekly_expenses.tuesday|default:0 }},
+            {{ weekly_expenses.wednesday|default:0 }},
+            {{ weekly_expenses.thursday|default:0 }},
+            {{ weekly_expenses.friday|default:0 }},
+            {{ weekly_expenses.saturday|default:0 }},
+            {{ weekly_expenses.sunday|default:0 }}
+          ],
+          backgroundColor: 'rgba(255, 3, 62, 0.6)', // Updated color
+          borderColor: 'rgba(255, 3, 62, 1)',
+          borderWidth: 0
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+        },
+      }
+    });
+  });
+</script>
+
+<style>
+  h2 {
+    text-align: center;
+    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  }
+  .card {
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Increased shadow for more depth */
+    transition: transform 0.2s, box-shadow 0.2s; /* Add transition for shadow */
+    color: white;
+  }
+
+  .card:hover {
+    transform: scale(
+      1.05
+    ); /* Slightly increased scale for better hover effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* Increased shadow on hover */
+  }
+
+  .chart-canvas {
+    height: 400px; /* Set the height for both charts to ensure they match */
+    width: 100% !important; /* Ensure the canvas uses full width of its container */
+  }
+</style>
+{% endblock %}

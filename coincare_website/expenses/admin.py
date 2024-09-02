@@ -13,9 +13,8 @@ class ExpenseAdmin(admin.ModelAdmin):
     """
     Admin configuration for the Expense model.
 
-    This class customizes the admin interface for managing Expense instances,
-    list view and how to search for
-    records.
+    This class customizes the admin interface for 
+    managing Expense instances.
     """
 
     list_display = (

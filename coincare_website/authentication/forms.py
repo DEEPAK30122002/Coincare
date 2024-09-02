@@ -10,25 +10,25 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-
 class SignupForm(UserCreationForm):
     """
     A form for creating a new user with additional fields for first name,
     last name, and email. This form extends the built-in UserCreationForm
     provided by Django to include these additional user attributes.
     """
-
     usable_password = None
-    email = forms.EmailField(max_length=50, help_text="Enter your email address")
+    email = forms.EmailField(
+        max_length=50,
+        help_text="Enter your email address"
+    )
 
     class Meta:
         """
         Metadata for the SignupForm class.
         Specifies the model to be used and the fields to be included in the form.
         """
-
         model = User
-        fields = ("username", "password1", "password2", "email")
+        fields = ('username', 'password1', 'password2', 'email')
 
     def save(self, commit=True):
         """
@@ -41,7 +41,7 @@ class SignupForm(UserCreationForm):
         User: The saved user instance.
         """
         user = super().save(commit=False)
-        user.email = self.cleaned_data["email"]
+        user.email = self.cleaned_data['email']
 
         if commit:
             user.save()

@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
-
 {% block content %}
 <div class="container mt-4">
   <div class="row">
@@ -18,108 +16,311 @@
         </ol>
       </nav>
     </div>
-
+    
     <div class="col-md-2">
-      <a href="{% url 'add-expenses'%}" class="btn btn-primary">Add Expense</a>
+      <a href="{% url 'add-expenses' %}" class="btn btn-outline-primary rounded-pill">Add Expense</a>
     </div>
   </div>
 
   <div class="container">
-    {% include 'partials/messages.html' %} {% if expenses.count %}
-
+    {% include 'partials/messages.html' %}
+    
+    {% if expenses.count %}
     <div class="row">
-      <div class="col-md-8"></div>
-      <div class="col-md-4">
-
-        <div class="form-group mt-4 mb-4">
-          <input type="text" class="form-control" id="searchField" placeholder="Search">
+      <!-- Center the chart -->
+      <div class="row justify-content-center mb-2">
+        <div class="col-md-11">
+          <canvas id="myChart" class="chart-canvas"></canvas>
         </div>
       </div>
-    </div>
-<div class="app-table">
 
-  <table class="table table-stripped table-hover">
-    <thead>
-      <tr>
-        <th>Amount ({{currency}})</th>
-        <th>Category</th>
-        <th>Description</th>
-        <th>Date</th>
-        <th></th>
-      </tr>
-    </thead>
+      <!-- Category Cards -->
+      <div class="row justify-content-center mb-2" id="categoryCards">
+        <!-- Cards will be inserted here by JavaScript -->
+      </div>
+      <div class="col-md-12 text-center">
+        <div class="card mb-3 category-card">
+          <div class="card-body " style="background-color: #FF033E; color: white;">
+            <h5 class="card-title">Total Expenses</h5>
+            <p class="card-text">({{ currency }})<span id="totalExpenses"></span></p>
+          </div>
+        </div>
+      </div>
 
-    <tbody>
-      {% for expense in page_obj%}
-      <tr>
-        <td>{{expense.amount}}</td>
-        <td>{{expense.category}}</td>
-        <td>{{expense.description}}</td>
-        <td>{{expense.date}}</td>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group mt-1 mb-2">
+            <label for="filter ">Filter by:</label>
+            <select class="form-control search-box" id="filter" onchange="applyFilter()">
+                <option value="all" {% if filter_value == 'all' %}selected{% endif %}>All</option>
+                <option value="daily" {% if filter_value == 'daily' %}selected{% endif %}>Daily</option>
+                <option value="weekly" {% if filter_value == 'weekly' %}selected{% endif %}>Weekly</option>
+                <option value="monthly" {% if filter_value == 'monthly' %}selected{% endif %}>Monthly</option>
+                <option value="3months" {% if filter_value == '3months' %}selected{% endif %}>Last 3 Months</option>
+                <option value="6months" {% if filter_value == '6months' %}selected{% endif %}>Last 6 Months</option>
+                <option value="yearly" {% if filter_value == 'yearly' %}selected{% endif %}>Yearly</option>
+            </select>
+        </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group mt-4 mb-3">
+            <input type="text" class="form-control search-box" id="searchField" placeholder="Search">
+          </div>
+        </div>
+      </div>
 
-        <td>
-          <a
-            href="{% url 'expense-edit' expense.id  %}"
-            class="btn btn-secondary btn-sm"
-            >Edit</a
-          >
-        </td>
-      </tr>
+      <div class="app-table">
+        <table class="table table-stripped table-hover ">
+          <thead>
+            <tr>
+              <th>Amount ({{ currency }})</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Date</th>
+              <th>Options</th>
+            </tr>
+          </thead>
 
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+          <tbody>
+            {% for expense in page_obj %}
+            <tr>
+              <td>{{ expense.amount }}</td>
+              <td>{{ expense.category }}</td>
+              <td>{{ expense.description }}</td>
+              <td>{{ expense.date }}</td>
 
+              <td>
+                <a href="{% url 'expense-edit' expense.id %}" class="btn btn-outline-success btn-sm rounded-pill">Edit</a>
+                <button type="button" class="btn btn-outline-danger btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#deleteModal{{ expense.id }}">Delete</button>
+              </td>
+            </tr>
+            <div class="modal fade" id="deleteModal{{ expense.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel{{ expense.id }}" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel{{ expense.id }}">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Are you sure you want to delete this expense record?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{% url 'expense-delete' expense.id %}" method="post" style="display: inline">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger rounded-pill">Delete</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
-<div class="table-output">
-  <table class="table table-stripped table-hover">
-    <thead>
-      <tr>
-        <th>Amount ({{currency}})</th>
-        <th>Category</th>
-        <th>Description</th>
-        <th>Date</th>
-        <th></th>
-      </tr>
-    </thead>
-  <tbody class="table-body">
+      <!-- <div class="row">
+        <div class="col-md-8">
+            
+        </div>
+        <div class="col-md-4">
+            <div class="form-group mt-2 mb-2">
+                <input type="text" class="form-control" id="searchField" placeholder="Search">
+            </div>
 
-  </tbody>
-</table>
-</div>
+        </div>
+    </div> -->
 
-<p class="no-results" style="display: none;">No results </p>
+      <div class="table-output">
+        <table class="table table-stripped table-hover">
+          <thead>
+            <tr>
+              <th>Amount ({{ currency }})</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Date</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="table-body">
+          </tbody>
+        </table>
+      </div>
+
+    <p class="no-results" style="display: none;">No results </p>
 
     <div class="pagination-container ">
-    <div class="pagination justify-content-end">
+    <div class="pagination justify-content-center ">
       Showing page {{page_obj.number}} of {{ page_obj.paginator.num_pages }}
     </div>
-    <ul class="pagination align-right float-right mr-auto mt-2 justify-content-end">
+    <ul class="pagination align-right float-right mr-auto mt-2 justify-content-center ">
       {% if page_obj.has_previous %}
       <li {% if page_obj.number == 1 %} class="page-item active" {% endif %}><a class="page-link" href="?page=1">&laquo; 1</a></li>
       <li class="page-item"> <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
       {% endif %}
 
+      {% for i in page_obj.paginator.page_range %}
+          {% if page_obj.number == i %}
+          <li class="page-item active"><a class="page-link">{{ i }}</a></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+          {% endif %}
+          {% endfor %}
+      
       {% if page_obj.has_next %}
       <li class="page-item"> <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-      <li class="page-item"> <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages}} &raquo;</a></li>
+      <!-- <li class="page-item"> <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages}} &raquo;</a></li> -->
       {% endif %}
 
 
     </ul>
     {% endif %}
+      </div>
   </div>
 </div>
-</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+  
 <script src="{% static 'js/searchExpenses.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fetch the data from your Django view
+    fetch("{% url 'expense_category_summary' %}")
+      .then(response => response.json())
+      .then(data => {
+        // Data processing
+        const categories = Object.keys(data.expense_category_data);
+        const amounts = Object.values(data.expense_category_data);
 
+        // Total expense
+        const totalExpenses = amounts.reduce((acc, amount) => acc + amount, 0);
+        document.getElementById('totalExpenses').textContent = totalExpenses.toFixed(2);
 
+        // Generate shades of red
+        const shadesOfRed = categories.map((_, index) => {
+            // Create varying shades by adjusting lightness
+            const lightness = 50 - (index * 30 / (categories.length - 1)); // Adjust range for lighter or darker shades
+            return `hsl(0, 85%, ${lightness}%)`; // Red color in HSL format
+        });
 
+        // Create the chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar', // Change this to 'line', 'pie', etc., as needed
+          data: {
+            labels: categories,
+            datasets: [{
+              label: 'Expenses by Category',
+              data: amounts,
+              backgroundColor: shadesOfRed, // Apply shades of red here
+              borderColor: shadesOfRed.map(color => color.replace(/(\d+%)/, '70%')), // Darker border color
+              borderWidth: 0 // Increase border width for better contrast
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false, // Adjust this if needed
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(tooltipItem) {
+                    return `${tooltipItem.label}: $${tooltipItem.raw.toFixed(2)}`;
+                  }
+                }
+              }
+            }
+          }
+        });
 
+        const cardContainer = document.getElementById('categoryCards');
+        cardContainer.innerHTML = ''; // Clear existing cards
+
+        categories.forEach((category, index) => {
+          const amount = amounts[index];
+          const color = shadesOfRed[index];
+          
+          // Create a card element
+          const card = document.createElement('div');
+          card.className = 'col-md-4';  // Adjust column size
+          card.innerHTML = `
+            <div class="card mb-3 category-card">
+              <div class="card-body" style="background-color: ${color}; color: white;">
+                <h5 class="card-title">${category}</h5>
+                <p class="card-text">({{ currency }}) ${amount.toFixed(2)}</p>
+              </div>
+            </div>
+          `;
+          
+          cardContainer.appendChild(card);
+        });
+      })
+      .catch(error => console.error('Error fetching expense category data:', error));
+  });
 </script>
 
+
+<script>
+    function applyFilter() {
+        const filter = document.getElementById('filter').value;
+        window.location.href = `?filter=${filter}`;
+    }
+</script>
+
+<style>
+  .search-box{
+    border-radius: 20px !important;
+  }
+
+  table {
+  border-collapse: collapse;
+  border-radius: 1em;
+  overflow: hidden;
+  }
+  
+  .card{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+    color: white;
+  }
+
+  .card-body {
+    border-radius: 12px;
+  }
+
+  .card:hover {
+    transform: scale(1.05); /* Slightly increased scale for better hover effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Increased shadow on hover */
+  }
+
+  .chart-canvas {
+    height: 300px; /* Adjust as needed */
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+
+  .pagination-container {
+    margin-top: 20px;
+  }
+
+  .pagination a {
+    color: #007bff;
+  }
+
+  .category-card {
+    border-radius: 12px;
+    color: white;
+  }
+
+  .category-card .card-body {
+    padding: 20px;
+  }
+</style>
 
 
 {% endblock content %}

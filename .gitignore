@@ -1,7 +1,18 @@
-
+coincare_website/accounts/__pycache__/
+coincare_website/accounts/migrations/
 coincare_website/authentication/__pycache__/
+coincare_website/authentication/migrations/
 coincare_website/coincare_website/__pycache__/
 coincare_website/coincare_website/.env/
+coincare_website/dashboard/__pycache__/
+coincare_website/dashboard/migrations/
 coincare_website/expenses/__pycache__/
+coincare_website/expenses/migrations/
+coincare_website/userincome/__pycache__/
+coincare_website/userincome/migrations/
+coincare_website/userpreferences/__pycache__/
+coincare_website/userpreferences/migrations/
+
+staticfiles/
 
 myenv/

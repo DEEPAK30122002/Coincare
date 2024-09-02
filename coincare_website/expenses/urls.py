@@ -1,9 +1,6 @@
 """
 URL patterns for the Expenses app.
-
-This module defines the URL routes for handling expense-related views, 
-including listing, adding, editing, deleting, and searching expenses. 
-It also includes routes for expense summaries and statistics.
+This module defines the URL routes for handling expense-related views.
 """
 
 from django.urls import path
@@ -18,10 +15,5 @@ urlpatterns = [
     path(
         "search-expenses/", csrf_exempt(views.search_expenses), name="search_expenses"
     ),
-    path(
-        "expense_category_summary",
-        views.expense_category_summary,
-        name="expense_category_summary",
-    ),
-    path("stats", views.stats_view, name="stats"),
+    path('expense_category_summary/', views.expense_category_summary, name="expense_category_summary"),
 ]

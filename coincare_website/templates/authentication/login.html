@@ -8,32 +8,49 @@
       href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;700&display=swap"
       rel="stylesheet"
     />
-
     {% load static %}
     <style>
       body {
         font-family: "Source Sans Pro", sans-serif;
-        background-color: #121212; /* Dark background color for the body */
         color: #e0e0e0; /* Light text color for contrast */
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        margin: 0;
+        position: relative;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("{% static 'img/coincare_hand.jpg' %}") no-repeat center
+          center fixed;
+        background-size: cover;
+        filter: brightness(60%); /* Adjust the brightness here */
+        z-index: -1; /* Ensure it is behind the content */
       }
       .container {
         background: rgba(
           33,
           33,
           33,
-          0.9
+          0.8
         ); /* Darker background for the container */
         padding: 2rem;
         border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Slightly darker shadow */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0); /* Slightly darker shadow */
         max-width: 400px;
         width: 100%;
+        position: relative; /* Ensure positioning is relative to the viewport */
       }
+
       h1 {
         margin-bottom: 1.5rem;
         font-size: 1.5rem;

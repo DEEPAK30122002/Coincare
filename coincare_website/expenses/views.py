@@ -1,221 +1,185 @@
-"""
-Views for the Expenses app.
-
-This module contains views for managing expenses, including searching,
-adding, editing, and deleting expenses. It also handles displaying expense
-summaries and statistics.
-"""
-
-import json
-import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from .models import Category, Expense
+# Create your views here.
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+import json
 from django.http import JsonResponse
 from userpreferences.models import UserPreference
-from .models import Category, Expense
+import datetime
 
 
-@login_required(login_url="/authentication/login")
 def search_expenses(request):
-    """
-    Search for expenses based on various criteria.
-
-    This view handles POST requests with a search string to filter expenses
-    by amount, date, description, or category. It returns a JSON response
-    with the matching expenses.
-
-    Returns:
-        JsonResponse: A JSON response with the search results.
-    """
-    if request.method == "POST":
-        search_str = json.loads(request.body).get("searchText")
-        expenses = (
-            Expense.objects.filter(amount__istartswith=search_str, owner=request.user)
-            | Expense.objects.filter(date__istartswith=search_str, owner=request.user)
-            | Expense.objects.filter(
-                description__icontains=search_str, owner=request.user
-            )
-            | Expense.objects.filter(category__icontains=search_str, owner=request.user)
+    if request.method == 'POST':
+        search_str = json.loads(request.body).get('searchText')
+        expenses = Expense.objects.filter(
+            amount__istartswith=search_str, owner=request.user
+        ) | Expense.objects.filter(
+            date__istartswith=search_str, owner=request.user
+        ) | Expense.objects.filter(
+            description__icontains=search_str, owner=request.user
+        ) | Expense.objects.filter(
+            category__icontains=search_str, owner=request.user
         )
+
+        # Filter by month if the search string is in a date format
+        try:
+            # Try to parse search_str as a month
+            year_month = datetime.datetime.strptime(search_str, '%Y-%m')
+            expenses = expenses.filter(date__year=year_month.year, date__month=year_month.month)
+        except ValueError:
+            pass  # Not a valid date format, continue with other filters
+
         data = list(expenses.values())
         return JsonResponse(data, safe=False)
 
 
-@login_required(login_url="/authentication/login")
+@login_required(login_url='/authentication/login')
 def index(request):
-    """
-    Display the list of expenses for the logged-in user.
-
-    This view handles GET requests and shows a paginated list of expenses
-    with the user's currency preference.
-
-    Returns:
-        HttpResponse: Rendered template with expenses and pagination data.
-    """
     categories = Category.objects.all()
-    expenses = Expense.objects.filter(owner=request.user)
-    paginator = Paginator(expenses, 5)
-    page_number = request.GET.get("page")
+    filter_value = request.GET.get('filter', 'all')
+    
+    today = datetime.date.today()
+    if filter_value == 'daily':
+        start_date = today
+    elif filter_value == 'weekly':
+        start_date = today - datetime.timedelta(days=7)
+    elif filter_value == 'monthly':
+        start_date = today - datetime.timedelta(days=30)
+    elif filter_value == '3months':
+        start_date = today - datetime.timedelta(days=90)
+    elif filter_value == '6months':
+        start_date = today - datetime.timedelta(days=180)
+    elif filter_value == 'yearly':
+        start_date = today - datetime.timedelta(days=365)
+    else:
+        start_date = None  # No filter applied
+    
+    # Filter expenses based on the selected date range
+    if start_date:
+        expenses = Expense.objects.filter(owner=request.user, date__gte=start_date)
+    else:
+        expenses = Expense.objects.filter(owner=request.user)
+    
+    paginator = Paginator(expenses, 10)
+    page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
+    
     try:
         user_preference = UserPreference.objects.get(user=request.user)
         currency = user_preference.currency
     except UserPreference.DoesNotExist:
-        currency = "USD"  # Set a default value or handle it as needed
+        currency = 'USD'  # Set a default value or handle it as needed
+    
+    context = {
+        'expenses': expenses,
+        'page_obj': page_obj,
+        'currency': currency,
+        'filter_value': filter_value  # Pass the filter value to the context
+    }
+    return render(request, 'expenses/index.html', context)
 
-    context = {"expenses": expenses, "page_obj": page_obj, "currency": currency}
-    return render(request, "expenses/index.html", context)
 
-
-@login_required(login_url="/authentication/login")
+@login_required(login_url='/authentication/login')
 def add_expense(request):
-    """
-    Add a new expense record.
-
-    This view handles both GET and POST requests. On GET, it displays a form
-    for adding a new expense. On POST, it processes the form data and creates
-    a new expense record.
-
-    Returns:
-        HttpResponse: Redirects to the expenses list on successful addition.
-    """
     categories = Category.objects.all()
-    context = {"categories": categories, "values": request.POST}
+    context = {
+        'categories': categories,
+        'values': request.POST
+    }
+    if request.method == 'GET':
+        return render(request, 'expenses/add_expense.html', context)
 
-    if request.method == "GET":
-        return render(request, "expenses/add_expense.html", context)
-
-    if request.method == "POST":
-        amount = request.POST.get("amount")
-        description = request.POST.get("description")
-        date = request.POST.get("expense_date")
-        category = request.POST.get("category")
+    if request.method == 'POST':
+        amount = request.POST['amount']
 
         if not amount:
-            messages.error(request, "Amount is required")
-            return render(request, "expenses/add_expense.html", context)
+            messages.error(request, 'Amount is required')
+            return render(request, 'expenses/add_expense.html', context)
+        description = request.POST['description']
+        date = request.POST['expense_date']
+        category = request.POST['category']
 
         if not description:
-            messages.error(request, "Description is required")
-            return render(request, "expenses/add_expense.html", context)
+            messages.error(request, 'description is required')
+            return render(request, 'expenses/add_expense.html', context)
 
-        Expense.objects.create(
-            owner=request.user,
-            amount=amount,
-            date=date,
-            category=category,
-            description=description,
-        )
-        messages.success(request, "Expense saved successfully")
-        return redirect("expenses")
+        Expense.objects.create(owner=request.user, amount=amount, date=date,
+                               category=category, description=description)
+        messages.success(request, 'Expense saved successfully')
+
+        return redirect('expenses')
 
 
-@login_required(login_url="/authentication/login")
+@login_required(login_url='/authentication/login')
 def expense_edit(request, id):
-    """
-    Edit an existing expense record.
-
-    This view handles both GET and POST requests. On GET, it displays a form
-    to edit an existing expense. On POST, it processes the form data and updates
-    the expense record.
-
-    Returns:
-        HttpResponse: Redirects to the expenses list on successful update.
-    """
     expense = Expense.objects.get(pk=id)
     categories = Category.objects.all()
-    context = {"expense": expense, "categories": categories}
-
-    if request.method == "GET":
-        return render(request, "expenses/edit-expense.html", context)
-
-    if request.method == "POST":
-        amount = request.POST.get("amount")
-        description = request.POST.get("description")
-        date = request.POST.get("expense_date")
-        category = request.POST.get("category")
+    context = {
+        'expense': expense,
+        'values': expense,
+        'categories': categories
+    }
+    if request.method == 'GET':
+        return render(request, 'expenses/edit-expense.html', context)
+    if request.method == 'POST':
+        amount = request.POST['amount']
 
         if not amount:
-            messages.error(request, "Amount is required")
-            return render(request, "expenses/edit-expense.html", context)
+            messages.error(request, 'Amount is required')
+            return render(request, 'expenses/edit-expense.html', context)
+        description = request.POST['description']
+        date = request.POST['expense_date']
+        category = request.POST['category']
 
         if not description:
-            messages.error(request, "Description is required")
-            return render(request, "expenses/edit-expense.html", context)
+            messages.error(request, 'description is required')
+            return render(request, 'expenses/edit-expense.html', context)
 
         expense.owner = request.user
         expense.amount = amount
-        expense.date = date
+        expense. date = date
         expense.category = category
         expense.description = description
 
         expense.save()
-        messages.success(request, "Expense updated successfully")
-        return redirect("expenses")
+        messages.success(request, 'Expense updated  successfully')
 
+        return redirect('expenses')
 
+@login_required(login_url='/authentication/login')
 def delete_expense(request, id):
-    """
-    Delete an expense record.
-
-    This view handles the deletion of an expense record by its ID.
-
-    Returns:
-        HttpResponse: Redirects to the expenses list after deletion.
-    """
     expense = Expense.objects.get(pk=id)
     expense.delete()
-    messages.success(request, "Expense removed")
-    return redirect("expenses")
+    messages.success(request, 'Expense removed')
+    return redirect('expenses')
 
 
 def expense_category_summary(request):
-    """
-    Provide a summary of expenses by category.
-
-    This view calculates the total amount spent in each category over the
-    past six months and returns a JSON response with the data.
-
-    Returns:
-        JsonResponse: A JSON response with expense data categorized by category.
-    """
     todays_date = datetime.date.today()
-    six_months_ago = todays_date - datetime.timedelta(days=30 * 6)
-    expenses = Expense.objects.filter(
-        owner=request.user, date__gte=six_months_ago, date__lte=todays_date
-    )
+    six_months_ago = todays_date-datetime.timedelta(days=30*6)
+    expenses = Expense.objects.filter(owner=request.user,
+                                      date__gte=six_months_ago, date__lte=todays_date)
     finalrep = {}
 
     def get_category(expense):
         return expense.category
-
     category_list = list(set(map(get_category, expenses)))
 
     def get_expense_category_amount(category):
-        return (
-            expenses.filter(category=category).aggregate(
-                total_amount=models.Sum("amount")
-            )["total_amount"]
-            or 0
-        )
+        amount = 0
+        filtered_by_category = expenses.filter(category=category)
 
-    for category in category_list:
-        finalrep[category] = get_expense_category_amount(category)
+        for item in filtered_by_category:
+            amount += item.amount
+        return amount
 
-    return JsonResponse({"expense_category_data": finalrep}, safe=False)
+    for x in expenses:
+        for y in category_list:
+            finalrep[y] = get_expense_category_amount(y)
+    
 
+    return JsonResponse({'expense_category_data': finalrep}, safe=False)
 
-@login_required(login_url="/authentication/login")
-def stats_view(request):
-    """
-    Render the statistics page.
-
-    This view handles rendering the page where statistics about expenses are displayed.
-
-    Returns:
-        HttpResponse: Rendered template for statistics.
-    """
-    return render(request, "expenses/stats.html")

@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Landing Page</title>
+    <title>CoinCare</title>
     <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,41 +16,52 @@
     <style>
       body {
         margin: 0;
-        font-family: "Oxanium", sans-serif;
-        background: rgb(
-          34,
-          34,
-          34
-        ); /* Dark background color for the whole page */
-        color: #f8f9fa; /* Light text color for better contrast */
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #f8f9fa;
+        overflow: hidden;
+      }
+
+      .background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        object-fit: cover;
       }
 
       .container {
         display: flex;
-        flex-wrap: wrap; /* Allows wrapping on smaller screens */
+        flex-wrap: wrap;
         align-items: center;
-        justify-content: center; /* Center items horizontally */
-        min-height: 100vh; /* Full viewport height */
-        width: 100vw; /* Full viewport width */
+        justify-content: center;
+        min-height: 100vh;
+        width: 100vw;
         padding: 20px;
         box-sizing: border-box;
+        position: relative;
       }
 
       .text-content {
         max-width: 600px;
-        padding: 20px; /* Padding around the text content */
-        opacity: 0; /* Start invisible */
-        transform: translateY(20px); /* Start with a slight downward offset */
-        animation: fadeInUp 1s ease-out forwards; /* Animation for text content */
-        text-align: center; /* Center align text */
+        padding: 20px;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 1s ease-out forwards;
+        text-align: center;
+        position: relative;
+        z-index: 1;
       }
 
       .image-content {
-        opacity: 0; /* Start invisible */
-        transform: translateY(20px); /* Start with a slight downward offset */
-        animation: fadeInUp 1.2s ease-out forwards; /* Animation for image */
-        animation-delay: 0.5s; /* Delay animation to start after text */
-        margin-bottom: 20px; /* Margin bottom for spacing on small screens */
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 1.2s ease-out forwards;
+        animation-delay: 0.5s;
+        margin-bottom: 20px;
+        position: relative;
+        z-index: 1;
       }
 
       .btn {
@@ -66,27 +77,32 @@
       }
 
       .login-btn {
-        background-color: rgb(48, 103, 228); /* Blue background for Login */
+        background-color: #007bff;
         color: white;
         border: none;
+        border-radius: 30px;
       }
 
       .login-btn:hover {
-        background-color: #0056b3; /* Darker blue on hover */
+        background-color: #0056b3;
         color: white;
       }
 
       .sign-up-btn {
-        background-color: #28a745; /* Green background for Sign Up */
+        background-color: #ff5722;
         color: white;
         border: none;
+        border-radius: 30px;
       }
 
       .sign-up-btn:hover {
-        background-color: #218838; /* Darker green on hover */
+        background-color: #e64a19;
         color: white;
       }
 
+      img {
+        filter: brightness(50%);
+      }
       @keyframes fadeInUp {
         from {
           opacity: 0;
@@ -100,41 +116,39 @@
 
       /* Image styling */
       .responsive-image {
-        max-width: 100%; /* Ensure image does not exceed container width */
-        height: auto; /* Maintain aspect ratio */
+        max-width: 100%;
+        height: auto;
       }
 
       @media (max-width: 768px) {
         .container {
-          flex-direction: column; /* Stack items vertically on smaller screens */
+          flex-direction: column;
         }
 
         .text-content {
-          padding: 10px; /* Reduce padding on smaller screens */
+          padding: 10px;
         }
 
         .image-content {
-          margin-bottom: 10px; /* Adjust margin for better spacing on smaller screens */
+          margin-bottom: 10px;
         }
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="col-12 col-md-6 d-flex justify-content-center image-content">
-        <img
-          src="{% static 'img/Tax-a.png' %}"
-          alt=""
-          class="responsive-image"
-        />
-      </div>
+    <img
+      src="{% static 'img/coincare_hand.jpg' %}"
+      alt=""
+      class="background-image"
+    />
 
+    <div class="container">
       <div
         class="text-content col-12 col-md-6 d-flex flex-column justify-content-center"
       >
-        <h1 class="display-4 mb-4">Welcome to CoinCare</h1>
+        <h1 class="display-4 mb-4"><b>Welcome to CoinCare</b></h1>
         <p class="lead mb-4">
-          Please choose one of the following options to proceed
+          <b> Please choose one of the following options to proceed </b>
         </p>
         <div class="d-grid gap-2 d-sm-flex justify-content-center mb-4">
           <a href="{% url 'login' %}" class="btn login-btn btn-lg">Login</a>

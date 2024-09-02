@@ -3,15 +3,15 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
-        <a href="{% url 'expenses' %}">Expenses</a>
+        <a href="{% url 'income' %}">Income</a>
       </li>
-      <li class="breadcrumb-item active" aria-current="page">Add Expense</li>
+      <li class="breadcrumb-item active" aria-current="page">Add Income</li>
     </ol>
   </nav>
 
   <div class="card search-box">
     <div class="card-body">
-      <form action="{% url 'add-expenses' %}" method="post">
+      <form action="{% url 'add-income' %}" method="post">
         {% include 'partials/messages.html' %} {% csrf_token %}
 
         <!-- Amount Field -->
@@ -42,22 +42,22 @@
 
         <!-- Category Field -->
         <div class="mb-3">
-          <label for="category" class="form-label">Category</label>
-          <select class="form-select search-box" name="category" id="category">
-            {% for category in categories %}
-            <option value="{{ category.name }}">{{ category.name }}</option>
+          <label for="" class="form-label">Sources</label>
+          <select class="form-select search-box" name="source" id="source">
+            {% for source in sources %}
+            <option value="{{ source.name }}">{{ source.name }}</option>
             {% endfor %}
           </select>
         </div>
 
         <!-- Date of Expense Field -->
         <div class="mb-3">
-          <label for="expense_date" class="form-label">Date of Expense</label>
+          <label for="" class="form-label">Date of Income</label>
           <input
             type="date"
             class="form-control search-box"
-            id="expense_date"
-            name="expense_date"
+            id="income_date"
+            name="income_date"
           />
         </div>
 
@@ -66,7 +66,7 @@
           Submit
         </button>
         <a
-          href="{% url 'expenses' %}"
+          href="{% url 'income' %}"
           class="btn btn-outline-primary rounded-pill mx-2"
           >Back</a
         >

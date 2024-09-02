@@ -5,18 +5,19 @@
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item">
-            <a href="{% url 'expenses' %}">Expenses</a>
+            <a href="{% url 'income' %}">Income</a>
           </li>
           <li class="breadcrumb-item active" aria-current="page">
-            Edit Expense
+            Edit Income
           </li>
         </ol>
       </nav>
     </div>
 
     <div class="col-md-2 text-end">
-      <!-- Trigger Delete Confirmation Modal -->
+      <!-- Delete Button triggers the modal -->
       <button
+        type="button"
         class="btn btn-outline-danger btn-sm rounded-pill"
         data-bs-toggle="modal"
         data-bs-target="#deleteModal"
@@ -28,7 +29,7 @@
 
   <div class="card search-box">
     <div class="card-body">
-      <form action="{% url 'expense-edit' expense.id %}" method="post">
+      <form action="{% url 'income-edit' income.id %}" method="post">
         {% include 'partials/messages.html' %} {% csrf_token %}
 
         <!-- Amount Field -->
@@ -57,27 +58,27 @@
           />
         </div>
 
-        <!-- Category Field -->
+        <!-- Source Field -->
         <div class="mb-3">
-          <label for="category" class="form-label">Category</label>
-          <select class="form-select search-box" name="category" id="category">
-            <option value="{{ values.category }}" selected>
-              {{ values.category }}
+          <label for="source" class="form-label">Source</label>
+          <select class="form-select search-box" name="source" id="source">
+            <option value="{{ values.source }}" selected>
+              {{ values.source }}
             </option>
-            {% for category in categories %}
-            <option value="{{ category.name }}">{{ category.name }}</option>
+            {% for source in categories %}
+            <option value="{{ source.name }}">{{ source.name }}</option>
             {% endfor %}
           </select>
         </div>
 
-        <!-- Date of Expense Field -->
+        <!-- Date of Income Field -->
         <div class="mb-3">
-          <label for="expense_date" class="form-label">Date of Expense</label>
+          <label for="income_date" class="form-label">Date of Income</label>
           <input
             type="date"
             class="form-control search-box"
-            id="expense_date"
-            name="expense_date"
+            id="income_date"
+            name="income_date"
             value="{{ values.date|date:'Y-m-d' }}"
           />
         </div>
@@ -87,7 +88,7 @@
           Save
         </button>
         <a
-          href="{% url 'expenses' %}"
+          href="{% url 'income' %}"
           class="btn btn-outline-primary rounded-pill mx-2"
           >Back</a
         >
@@ -118,8 +119,7 @@
         ></button>
       </div>
       <div class="modal-body">
-        Are you sure you want to delete this expense record? This action cannot
-        be undone.
+        Are you sure you want to delete this income record?
       </div>
       <div class="modal-footer">
         <button
@@ -130,7 +130,7 @@
           Cancel
         </button>
         <form
-          action="{% url 'expense-delete' expense.id %}"
+          action="{% url 'income-delete' income.id %}"
           method="post"
           style="display: inline"
         >

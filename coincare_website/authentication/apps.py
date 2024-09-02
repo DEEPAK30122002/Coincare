@@ -12,8 +12,8 @@ class AuthenticationConfig(AppConfig):
     """
     Configuration for the authentication app.
 
-    This class sets up the application configuration for the 'authentication'
-    app, including the default auto field type.
+    This class sets up the application configuration for 
+    the 'authentication' app.
     """
 
     default_auto_field = "django.db.models.BigAutoField"

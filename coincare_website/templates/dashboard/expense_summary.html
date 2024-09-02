@@ -1,0 +1,163 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary rounded-pill"
+      >Back</a
+    >
+    <h2 class="text-center flex-grow-1 mb-0">Expense Summary</h2>
+    <a href="{% url 'expenses' %}" class="btn btn-outline-dark rounded-pill"
+      >Manage Expense</a
+    >
+  </div>
+
+  <div class="row">
+    <!-- Card for Today's Expenses -->
+    <div class="col-md-4">
+      <div
+        class="card text-white bg-primary mb-4 shadow-lg rounded-lg animated-card"
+      >
+        <div class="card-body text-center">
+          <h5 class="card-title">Today’s Expenses</h5>
+          <p class="card-text display-4">{{ today_expenses }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Card for This Week's Expenses -->
+    <div class="col-md-4">
+      <div
+        class="card text-white bg-success mb-4 shadow-lg rounded-lg animated-card"
+      >
+        <div class="card-body text-center">
+          <h5 class="card-title">This Week's Expenses</h5>
+          <p class="card-text display-4">{{ weekly_expenses }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Card for This Month's Expenses -->
+    <div class="col-md-4">
+      <div
+        class="card text-white bg-info mb-4 shadow-lg rounded-lg animated-card"
+      >
+        <div class="card-body text-center">
+          <h5 class="card-title">This Month's Expenses</h5>
+          <p class="card-text display-4">{{ monthly_expenses }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Card for Last 3 Months' Expenses -->
+    <div class="col-md-6">
+      <div
+        class="card text-white bg-warning mb-4 shadow-lg rounded-lg animated-card"
+      >
+        <div class="card-body text-center">
+          <h5 class="card-title">Last 3 Months’ Expenses</h5>
+          <p class="card-text display-4">{{ last_three_months_expenses }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Card for Last 6 Months' Expenses -->
+    <div class="col-md-6">
+      <div
+        class="card text-white bg-danger mb-4 shadow-lg rounded-lg animated-card"
+      >
+        <div class="card-body text-center">
+          <h5 class="card-title">Last 6 Months’ Expenses</h5>
+          <p class="card-text display-4">{{ last_six_months_expenses }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Card for Top 5 Expenses -->
+    <div class="col-md-12">
+      <div class="card bg-light mb-4 shadow-lg rounded-lg animated-card">
+        <div class="card-body">
+          <h5 class="card-title text-center">Top 5 Expense Categories</h5>
+          <ul class="list-group list-group-flush">
+            {% for category in top_expenses %}
+            <li
+              class="list-group-item d-flex justify-content-between align-items-center"
+            >
+              {{ category.category }}
+              <span
+                class="badge badge-pill"
+                style="background-color: #17a2b8; color: white"
+              >
+                {{ category.total_amount }}
+              </span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js for Graphical Representation -->
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card bg-light shadow-lg rounded-lg">
+        <div class="card-body">
+          <h5 class="card-title text-center">Expenses Overview</h5>
+          <canvas id="expensesChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js Integration -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  var ctx = document.getElementById('expensesChart').getContext('2d');
+  var expensesChart = new Chart(ctx, {
+    type: 'line', // You can change the chart type here (line, bar, pie, etc.)
+    data: {
+      labels: ['Today', 'This Week', 'This Month', 'Last 3 Months', 'Last 6 Months'],
+      datasets: [{
+        label: 'Expenses',
+        data: [{{ today_expenses }}, {{ weekly_expenses }}, {{ monthly_expenses }}, {{ last_three_months_expenses }}, {{ last_six_months_expenses }}],
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 2,
+        fill: true
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      },
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+        },
+      },
+    }
+  });
+</script>
+<style>
+  h2 {
+    text-align: center;
+    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  }
+  .card {
+    border-radius: 12px;
+  }
+  .animated-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .animated-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+</style>
+{% endblock %}

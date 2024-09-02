@@ -1,0 +1,111 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary rounded-pill"
+      >Back</a
+    >
+    <h2 class="text-center flex-grow-1 mb-0">Balance Summary</h2>
+  </div>
+
+  <div class="col-md-12">
+    <div
+      class="card text-white bg-success mb-4 shadow-lg rounded-lg animated-card"
+    >
+      <div class="card-body text-center">
+        <h5 class="card-title">Current Balance</h5>
+        <p class="card-text display-4">{{ balance }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js for Doughnut Chart Representation -->
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card bg-light shadow-lg rounded-lg">
+        <div class="card-body">
+          <h5 class="card-title text-center">Income to Expense Ratio</h5>
+          <canvas id="balanceChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js Integration -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  var ctx = document.getElementById('balanceChart').getContext('2d');
+  var balanceChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Income', 'Expenses',],
+      datasets: [{
+        data: [{{ total_income }}, {{ total_expenses }}],
+        backgroundColor: [
+          'rgba(54, 162, 235, 0.7)',
+          'rgba(255, 99, 132, 0.7)',
+          'rgba(75, 192, 192, 0.7)'
+        ],
+        borderColor: [
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(75, 192, 192, 1)'
+        ],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+        },
+      },
+    }
+  });
+</script>
+<style>
+  h2 {
+    text-align: center;
+    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  }
+  .card {
+    border-radius: 12px;
+  }
+
+  .animated-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .animated-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .full-height-card {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .full-height-card .card-body {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .full-height-card .card-body canvas {
+    max-height: 90%;
+    max-width: 90%;
+  }
+
+  #balanceChart {
+    max-height: 400px; /* Adjust the height as needed */
+    max-width: 100%; /* Make the chart responsive */
+    margin: 0 auto; /* Center the chart */
+  }
+</style>
+{% endblock %}
