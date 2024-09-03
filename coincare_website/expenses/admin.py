@@ -1,8 +1,5 @@
 """
 Django admin configuration for the Expenses app.
-
-This module registers the models from the Expenses app with the Django admin
-site, allowing them to be managed through the admin interface.
 """
 
 from django.contrib import admin
@@ -12,9 +9,6 @@ from .models import Expense, Category
 class ExpenseAdmin(admin.ModelAdmin):
     """
     Admin configuration for the Expense model.
-
-    This class customizes the admin interface for 
-    managing Expense instances.
     """
 
     list_display = (
@@ -29,7 +23,7 @@ class ExpenseAdmin(admin.ModelAdmin):
         "category",
         "date",
     )
-    list_per_page = 5
+    list_per_page = 15
 
 
 # Register models with the admin site

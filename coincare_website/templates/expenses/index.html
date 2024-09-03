@@ -18,7 +18,7 @@
     </div>
     
     <div class="col-md-2">
-      <a href="{% url 'add-expenses' %}" class="btn btn-outline-primary rounded-pill">Add Expense</a>
+      <a href="{% url 'add-expenses' %}" class="btn btn-primary rounded-pill">Add Expense</a>
     </div>
   </div>
 
@@ -197,12 +197,18 @@
         const totalExpenses = amounts.reduce((acc, amount) => acc + amount, 0);
         document.getElementById('totalExpenses').textContent = totalExpenses.toFixed(2);
 
-        // Generate shades of red
-        const shadesOfRed = categories.map((_, index) => {
-            // Create varying shades by adjusting lightness
-            const lightness = 50 - (index * 30 / (categories.length - 1)); // Adjust range for lighter or darker shades
-            return `hsl(0, 85%, ${lightness}%)`; // Red color in HSL format
-        });
+        let shadesOfRed;
+        
+        if (categories.length === 1) {
+            // Single category, use full red
+            shadesOfRed = ['hsl(0, 85%, 50%)']; // Full red color
+        } else {
+            // Multiple categories, generate shades of red
+            shadesOfRed = categories.map((_, index) => {
+                const lightness = 50 - (index * 30 / (categories.length - 1));
+                return `hsl(0, 85%, ${lightness}%)`;
+            });
+        }
 
         // Create the chart
         const ctx = document.getElementById('myChart').getContext('2d');

@@ -1,8 +1,5 @@
 """
 Models for the UserPreferences app.
-
-This module defines the models for handling user-specific preferences,
-including the user's currency preference.
 """
 
 from django.db import models
@@ -11,6 +8,9 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class UserPreference(models.Model):
+    """
+    Represents user-specific preferences such as currency.
+    """
     user = models.OneToOneField(to=User, on_delete=models.CASCADE)
     currency = models.CharField(max_length=255, blank=True, null=True)
 

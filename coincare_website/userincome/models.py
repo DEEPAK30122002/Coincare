@@ -1,3 +1,6 @@
+"""
+Models for the User Income app.
+"""
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
@@ -5,6 +8,9 @@ from django.utils.timezone import now
 
 # Create your models here.
 class UserIncome(models.Model):
+    """
+    Represents income entries for a user.
+    """
     amount = models.FloatField()
     date = models.DateField(default=now)
     description = models.TextField()
@@ -15,10 +21,16 @@ class UserIncome(models.Model):
         return self.source
 
     class Meta:
+        """
+        Represents the order of date.
+        """
         ordering: ["-date"]
 
 
 class Source(models.Model):
+    """
+    Represents a source of income.
+    """
     name = models.CharField(max_length=255)
 
     def __str__(self):

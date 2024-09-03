@@ -18,7 +18,7 @@
     </div>
 
     <div class="col-md-2 text-right">
-      <a href="{% url 'add-income' %}" class="btn btn-outline-primary rounded-pill">Add Income</a>
+      <a href="{% url 'add-income' %}" class="btn btn-primary rounded-pill">Add Income</a>
     </div>
   </div>
 
@@ -180,15 +180,19 @@
             document.getElementById('totalIncome').textContent = totalIncome.toFixed(2);
 
             // Base color in HSL format
-            const baseColorHSL = 'hsl(159, 48%, 52%)'; // Mint green
-
-            // Generate shades of mint green
-            const shadesOfMintGreen = categories.map((_, index) => {
-                // Create varying shades by adjusting lightness
-                const lightness = 52 - (index * 30 / (categories.length - 1)); // Adjust range for lighter or darker shades
-                return `hsl(159, 48%, ${lightness}%)`; // Mint green color in HSL format
-            });
-
+            let shadesOfMintGreen;
+        
+            if (categories.length === 1) {
+            // Single category, use full red
+              shadesOfMintGreen = ['hsl(159, 48%, 52%)']; // Full red color
+            } else {
+            // Multiple categories, generate shades of red
+              shadesOfMintGreen = categories.map((_, index) => {
+                  const lightness = 50 - (index * 30 / (categories.length - 1));
+                  return `hsl(159, 48%, ${lightness}%)`;
+              });
+            }
+            
             const ctx = document.getElementById('myChart').getContext('2d');
             new Chart(ctx, {
                 type: 'bar', // Change this to 'line', 'pie', etc., as needed

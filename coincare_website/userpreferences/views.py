@@ -1,13 +1,19 @@
-from django.shortcuts import render, redirect
+"""
+Views for the UserPreferences app.
+"""
 import os
 import json
+from django.shortcuts import render, redirect
 from django.conf import settings
-from .models import UserPreference
 from django.contrib import messages
-from django.http import HttpResponseNotFound, HttpResponseBadRequest
 
+from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from .models import UserPreference
 
 def index(request):
+    """
+    Display and update user preferences for currency.
+    """
     currency_data = []
     file_path = os.path.join(settings.BASE_DIR, "currencies.json")
 

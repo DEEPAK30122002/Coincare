@@ -1,4 +1,8 @@
 {%load static%}
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  rel="stylesheet"
+/>
 <nav
   id="sidebarMenu"
   class="col-md-3 col-lg-2 d-md-block sidebar collapse custom-sidebar"
@@ -12,19 +16,22 @@
           href="{% url 'dashboard' %}"
         >
           <span data-feather="home"></span>
-          Dashboard
+          <i class="fas fa-chart-pie"></i>
+          &nbsp; Dashboard
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link dashboard" href="{% url 'expenses' %}">
           <span data-feather="file"></span>
-          Expenses
+          <i class="fas fa-receipt"></i>
+          &nbsp; Expenses
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link dashboard" href="{% url 'income' %}">
           <span data-feather="shopping-cart"></span>
-          Income
+          <i class="fas fa-dollar-sign"> </i>
+          &nbsp; Income
         </a>
       </li>
     </ul>
@@ -39,13 +46,15 @@
       <li class="nav-item">
         <a class="nav-link dashboard" href="{% url 'preferences' %}">
           <span data-feather="file"></span>
-          Settings
+          <i class="fas fa-cog"></i>
+          &nbsp; Settings
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link dashboard" href="{% url 'profile' %}">
           <span data-feather="shopping-cart"></span>
-          Account
+          <i class="fas fa-user-circle"></i>
+          &nbsp; Account
         </a>
       </li>
     </ul>

@@ -1,3 +1,8 @@
+"""
+Django admin configuration for the userincome app.
+"""
+
+
 from django.contrib import admin
 from .models import UserIncome, Source
 
