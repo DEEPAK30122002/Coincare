@@ -1,5 +1,5 @@
 # Use the official Python image from the Docker Hub as the base image
-FROM python:3.12-slim
+FROM python:3.11-slim
 
 # Set environment variables to avoid Python buffering
 ENV PYTHONUNBUFFERED=1
@@ -15,6 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code into the container
 COPY . .
-
 # Specify the command to run your application
-CMD ["python", "app.py"]
+EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
