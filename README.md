@@ -30,10 +30,15 @@ Before you begin, ensure you have the following installed:
 
 ### 1. Clone the Repository
 
--git clone https://github.com/yourusername/coincare.git
--cd coincare
+```bash
+git clone https://github.com/yourusername/coincare.git
+cd coincare
+```
 
 ### 2. Create a Virtual Environment
 
--pip install virtualenv
--virtualenv myenv
+```bash
+pip install virtualenv
+virtualenv myenv
+source myenv/bin/activate # On Windows: myenv\Scripts\activate
+```
