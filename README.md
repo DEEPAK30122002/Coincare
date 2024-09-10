@@ -42,3 +42,11 @@ pip install virtualenv
 virtualenv myenv
 source myenv/bin/activate # On Windows: myenv\Scripts\activate
 ```
+
+### 3. Install Dependencies
+
+To install all the required dependencies listed in the `requirements.txt` file, run the following command:
+
+```bash
+pip install -r requirements.txt
+```
