@@ -151,4 +151,9 @@
     border-radius: 20px !important;
   }
 </style>
+<script>
+  const dateInput = document.getElementById("income_date");
+  const today = new Date().toISOString().split("T")[0];
+  dateInput.setAttribute("max", today);
+</script>
 {% endblock %}
