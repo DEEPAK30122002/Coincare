@@ -25,6 +25,15 @@ class SignupForm(UserCreationForm):
         model = User
         fields = ("username", "password1", "password2", "email")
 
+    def clean_email(self):
+        """
+        Ensure that the provided email is unique.
+        """
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("A user with this email already exists.")
+        return email
+
     def save(self, commit=True):
         """
         Save the user with additional fields (email, first name, last name).

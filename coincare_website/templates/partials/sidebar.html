@@ -20,6 +20,13 @@
           &nbsp; Dashboard
         </a>
       </li>
+      <li class="nav-item"></li>
+        <a class="nav-link dashboard" href="{% url 'income' %}">
+          <span data-feather="shopping-cart"></span>
+          <i class="fas fa-dollar-sign"> </i>
+          &nbsp; Income
+        </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link dashboard" href="{% url 'expenses' %}">
           <span data-feather="file"></span>
@@ -27,13 +34,7 @@
           &nbsp; Expenses
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link dashboard" href="{% url 'income' %}">
-          <span data-feather="shopping-cart"></span>
-          <i class="fas fa-dollar-sign"> </i>
-          &nbsp; Income
-        </a>
-      </li>
+      
     </ul>
 
     <ul class="nav flex-column">
